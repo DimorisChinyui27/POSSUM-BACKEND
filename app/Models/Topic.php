@@ -4,7 +4,9 @@
 namespace App\Models;
 
 
-class Topic
+use Illuminate\Database\Eloquent\Model;
+
+class Topic extends Model
 {
 
 }
