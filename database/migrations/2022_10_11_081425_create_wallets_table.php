@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->float('balance')->default(0.0);
             $table->string('wallet_id')->unique();
-            $table->foreignId('users');
+            $table->foreignId('user_id')->unique()->constrained()->on('users');
             $table->timestamps();
         });
     }

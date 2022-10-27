@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('questions_topics', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('topics');
-            $table->foreignId('questions');
+            $table->foreignId('topic_id')->constrained()->on('topics');
+            $table->foreignId('question_id')->constrained()->on('questions');
             $table->timestamps();
         });
     }

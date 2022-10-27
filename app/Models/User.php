@@ -113,10 +113,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasManyThrough(
             Topic::class,
                     UserTopic::class,
-            'topic_id',
-            'id',
-            'id',
             'user_id',
+            'id',
+            'id',
+            'topic_id'
+
 
         );
     }
@@ -127,7 +128,7 @@ class User extends Authenticatable implements JWTSubject
      */
     public function country(): BelongsTo
     {
-        return $this->belongsTo(Country::class);
+        return $this->belongsTo(Country::class)->select(['id', 'name']);
     }
 
     /**
@@ -136,7 +137,7 @@ class User extends Authenticatable implements JWTSubject
      */
     public function city(): BelongsTo
     {
-        return $this->belongsTo(City::class);
+        return $this->belongsTo(City::class)->select(['id', 'name']);
     }
 
     /**

@@ -17,6 +17,7 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('username')->unique();
             $table->string('phone')->nullable()->unique();
             $table->date('dob')->nullable();
             $table->enum('gender', ['Male', 'Female'])->nullable();
@@ -28,10 +29,10 @@ class CreateUsersTable extends Migration
 
             // type of sign up and os
             $table->string('os')->default('web')->comment('web, tablet, phone');
-            $table->string('signup_type')->default('afeshop')->nullable('facebook, google, possum');
+            $table->string('signup_type')->default('possum')->nullable('facebook, google, possum');
 
             // Country foreign key
-            $table->unsignedBigInteger('country_id')->nullable()->default(1)->comment('Users country');
+            $table->unsignedBigInteger('country_id')->nullable()->comment('Users country');
             $table->foreign('country_id')->references('id')
                 ->on('world_countries')->onUpdate('cascade')->onDelete('set null');
 
@@ -39,6 +40,7 @@ class CreateUsersTable extends Migration
             $table->unsignedBigInteger('city_id')->nullable()->comment('Users Cities');
             $table->foreign('city_id')->references('id')
                 ->on('world_cities')->onUpdate('cascade')->onDelete('set null');
+            $table->string('activation_token', 60)->nullable()->comment('Activation token');
 
             $table->rememberToken();
             $table->timestamps();
