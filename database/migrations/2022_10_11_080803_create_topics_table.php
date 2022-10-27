@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('topics', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('slug')->unique();
             $table->string('description')->nullable();
             $table->string('image')->nullable();
             $table->string('cover_image')->nullable();

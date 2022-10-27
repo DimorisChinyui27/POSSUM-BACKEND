@@ -13,6 +13,7 @@ class Tag extends Model
     use Sluggable;
 
     protected $guarded = [];
+    protected $table = 'tags';
 
     public function sluggable(): array
     {

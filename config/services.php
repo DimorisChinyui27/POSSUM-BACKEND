@@ -30,5 +30,16 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
-
+    'supported_drivers' => ['facebook', 'google'],
+    'google' => [
+        'client_id'     => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect'      => env('GOOGLE_REDIRECT', 'https://api.afeshop.africa/api/route237/auth/google/callback')
+    ],
+    'facebook' => [
+        'client_id'     => env('FACEBOOK_CLIENT_ID'),
+        'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
+        'redirect'      => env('FACEBOOK_REDIRECT', 'https://api.afeshop.africa/api/route237/auth/facebook/callback')
+    ],
+    'front_end_url' => env('FRONT_END_URL', 'https://afeshop.africa'),
 ];

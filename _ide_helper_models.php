@@ -16,8 +16,8 @@ namespace App\Models{
  *
  * @property int $id
  * @property string $body
- * @property int $users
- * @property int $questions
+ * @property int $user_id
+ * @property int $question_id
  * @property int $satisfy
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -27,12 +27,12 @@ namespace App\Models{
  * @property-read int|null $downvoters_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Media[] $media
  * @property-read int|null $media_count
- * @property-read \App\Models\Question|null $question
+ * @property-read \App\Models\Question $question
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Transaction[] $transactions
  * @property-read int|null $transactions_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $upvoters
  * @property-read int|null $upvoters_count
- * @property-read \App\Models\User|null $user
+ * @property-read \App\Models\User $user
  * @property-read \Illuminate\Database\Eloquent\Collection|\LaravelInteraction\Vote\Vote[] $voteableVotes
  * @property-read int|null $voteable_votes_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $voters
@@ -47,11 +47,11 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Answer whereNotDownvotedBy(\Illuminate\Database\Eloquent\Model $user)
  * @method static \Illuminate\Database\Eloquent\Builder|Answer whereNotUpvotedBy(\Illuminate\Database\Eloquent\Model $user)
  * @method static \Illuminate\Database\Eloquent\Builder|Answer whereNotVotedBy(\Illuminate\Database\Eloquent\Model $user)
- * @method static \Illuminate\Database\Eloquent\Builder|Answer whereQuestions($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Answer whereQuestionId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Answer whereSatisfy($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Answer whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Answer whereUpvotedBy(\Illuminate\Database\Eloquent\Model $user)
- * @method static \Illuminate\Database\Eloquent\Builder|Answer whereUsers($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Answer whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Answer whereVotedBy(\Illuminate\Database\Eloquent\Model $user)
  */
 	class Answer extends \Eloquent {}
@@ -127,11 +127,23 @@ namespace App\Models{
 /**
  * App\Models\Permission
  *
+ * @property int $id
+ * @property string $name
+ * @property string|null $display_name
+ * @property string|null $description
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Role[] $roles
  * @property-read int|null $roles_count
  * @method static \Illuminate\Database\Eloquent\Builder|Permission newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Permission newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Permission query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Permission whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Permission whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Permission whereDisplayName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Permission whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Permission whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Permission whereUpdatedAt($value)
  */
 	class Permission extends \Eloquent {}
 }
@@ -144,7 +156,7 @@ namespace App\Models{
  * @property string $title
  * @property string $body
  * @property string $slug
- * @property int $users
+ * @property int $user_id
  * @property float|null $bounce
  * @property int $has_correct_answer
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -187,7 +199,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereUpvotedBy(\Illuminate\Database\Eloquent\Model $user)
- * @method static \Illuminate\Database\Eloquent\Builder|Question whereUsers($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Question whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereVotedBy(\Illuminate\Database\Eloquent\Model $user)
  * @method static \Illuminate\Database\Eloquent\Builder|Question withUniqueSlugConstraints(\Illuminate\Database\Eloquent\Model $model, string $attribute, array $config, string $slug)
  */
@@ -199,8 +211,8 @@ namespace App\Models{
  * App\Models\QuestionTopic
  *
  * @property int $id
- * @property int $topics
- * @property int $questions
+ * @property int $topic_id
+ * @property int $question_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|QuestionTopic newModelQuery()
@@ -208,8 +220,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|QuestionTopic query()
  * @method static \Illuminate\Database\Eloquent\Builder|QuestionTopic whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|QuestionTopic whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|QuestionTopic whereQuestions($value)
- * @method static \Illuminate\Database\Eloquent\Builder|QuestionTopic whereTopics($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|QuestionTopic whereQuestionId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|QuestionTopic whereTopicId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|QuestionTopic whereUpdatedAt($value)
  */
 	class QuestionTopic extends \Eloquent {}
@@ -219,11 +231,23 @@ namespace App\Models{
 /**
  * App\Models\Role
  *
+ * @property int $id
+ * @property string $name
+ * @property string|null $display_name
+ * @property string|null $description
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Permission[] $permissions
  * @property-read int|null $permissions_count
  * @method static \Illuminate\Database\Eloquent\Builder|Role newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Role newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Role query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Role whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Role whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Role whereDisplayName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Role whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Role whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Role whereUpdatedAt($value)
  */
 	class Role extends \Eloquent {}
 }
@@ -261,12 +285,14 @@ namespace App\Models{
  * App\Models\Topic
  *
  * @property int $id
- * @property string $name
+ * @property array $name
+ * @property string $slug
  * @property string|null $description
  * @property string|null $image
  * @property string|null $cover_image
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|Topic findSimilarSlugs(string $attribute, array $config, string $slug)
  * @method static \Illuminate\Database\Eloquent\Builder|Topic newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Topic newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Topic query()
@@ -276,7 +302,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Topic whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Topic whereImage($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Topic whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Topic whereSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Topic whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Topic withUniqueSlugConstraints(\Illuminate\Database\Eloquent\Model $model, string $attribute, array $config, string $slug)
  */
 	class Topic extends \Eloquent {}
 }
@@ -292,29 +320,29 @@ namespace App\Models{
  * @property float $amount
  * @property float $fee
  * @property string $status
- * @property int $users
- * @property int|null $questions
- * @property int|null $answers
+ * @property int $user_id
+ * @property int|null $question_id
+ * @property int|null $answer_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Answer|null $answer
  * @property-read \App\Models\Question|null $question
- * @property-read \App\Models\User|null $user
+ * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction query()
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereAmount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereAnswers($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereAnswerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereFee($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereMethod($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereQuestions($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereQuestionId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereTransactionId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereUsers($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereUserId($value)
  */
 	class Transaction extends \Eloquent {}
 }
@@ -326,6 +354,7 @@ namespace App\Models{
  * @property int $id
  * @property string $name
  * @property string $email
+ * @property string $username
  * @property string|null $phone
  * @property string|null $dob
  * @property string|null $gender
@@ -338,6 +367,7 @@ namespace App\Models{
  * @property string|null $signup_type
  * @property int|null $country_id Users country
  * @property int|null $city_id Users Cities
+ * @property string|null $activation_token Activation token
  * @property string|null $remember_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -370,6 +400,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User orWherePermissionIs($permission = '')
  * @method static \Illuminate\Database\Eloquent\Builder|User orWhereRoleIs($role = '', $team = null)
  * @method static \Illuminate\Database\Eloquent\Builder|User query()
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereActivationToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereAddress($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereCityId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereCountryId($value)
@@ -392,6 +423,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User whereRoleIs($role = '', $team = null, $boolean = 'and')
  * @method static \Illuminate\Database\Eloquent\Builder|User whereSignupType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereUsername($value)
  */
 	class User extends \Eloquent implements \Tymon\JWTAuth\Contracts\JWTSubject {}
 }
@@ -401,8 +433,8 @@ namespace App\Models{
  * App\Models\UserTopic
  *
  * @property int $id
- * @property int $users
- * @property int $topics
+ * @property int $user_id
+ * @property int $topic_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|UserTopic newModelQuery()
@@ -410,9 +442,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|UserTopic query()
  * @method static \Illuminate\Database\Eloquent\Builder|UserTopic whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserTopic whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserTopic whereTopics($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserTopic whereTopicId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserTopic whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserTopic whereUsers($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserTopic whereUserId($value)
  */
 	class UserTopic extends \Eloquent {}
 }
@@ -424,10 +456,10 @@ namespace App\Models{
  * @property int $id
  * @property float $balance
  * @property string $wallet_id
- * @property int $users
+ * @property int $user_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\User|null $user
+ * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|Wallet newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Wallet newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Wallet query()
@@ -435,7 +467,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Wallet whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Wallet whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Wallet whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Wallet whereUsers($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Wallet whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Wallet whereWalletId($value)
  */
 	class Wallet extends \Eloquent {}

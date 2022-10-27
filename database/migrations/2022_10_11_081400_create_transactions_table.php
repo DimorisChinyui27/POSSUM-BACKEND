@@ -21,9 +21,9 @@ return new class extends Migration
             $table->float('amount');
             $table->float('fee')->default(0.0);
             $table->enum('status', ['cancelled', 'pending', 'failed', 'complete'])->default('pending');
-            $table->foreignId('users');
-            $table->foreignId('questions')->nullable();
-            $table->foreignId('answers')->nullable();
+            $table->foreignId('user_id')->constrained()->on('users');
+            $table->foreignId('question_id')->nullable()->constrained()->on('questions');
+            $table->foreignId('answer_id')->nullable()->constrained()->on('answers')->nullable();
             $table->timestamps();
         });
     }
