@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\PaymentMethod;
 use App\Models\Topic;
 use Illuminate\Database\Seeder;
 
@@ -21,5 +22,6 @@ class TopicSeeder extends Seeder
         Topic::create(['name' => ['fr' => 'Musique', 'en' => 'Music']]);
         Topic::create(['name' => ['fr' => 'Livres', 'en' => 'Books']]);
         Topic::create(['name' => ['fr' => 'Others', 'en' => 'Autres']]);
+        PaymentMethod::create([]);
     }
 }

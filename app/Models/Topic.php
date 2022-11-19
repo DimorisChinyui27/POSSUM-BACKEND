@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Spatie\Translatable\HasTranslations;
 
 class Topic extends Model
@@ -26,5 +27,21 @@ class Topic extends Model
                 'source' => 'name'
             ]
         ];
+    }
+
+    /**
+     * get list of questions
+     * @return HasManyThrough
+     */
+    public function questions(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            Question::class,
+            QuestionTopic::class,
+            'topic_id',
+            'id',
+            'id',
+            'question_id'
+        );
     }
 }

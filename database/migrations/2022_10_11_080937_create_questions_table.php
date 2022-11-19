@@ -19,8 +19,9 @@ return new class extends Migration
             $table->longText('body');
             $table->string('slug')->unique();
             $table->foreignId('user_id')->constrained()->on('users');
-            $table->float('bounce')->nullable();
+            $table->float('gift')->default(0.0);
             $table->boolean('has_correct_answer')->default(false);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

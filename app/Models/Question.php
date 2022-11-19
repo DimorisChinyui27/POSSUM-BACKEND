@@ -6,15 +6,17 @@ namespace App\Models;
 
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use LaravelInteraction\Vote\Concerns\Voteable;
 
 class Question extends Model
 {
+    use SoftDeletes;
+    protected $guarded = [];
     use Voteable;
     use Sluggable;
 
@@ -36,11 +38,11 @@ class Question extends Model
     }
 
     /**
-     * @return HasOne
+     * @return BelongsTo
      */
-    public function user(): HasOne
+    public function user(): BelongsTo
     {
-        return $this->hasOne(User::class);
+        return $this->belongsTo(User::class);
     }
 
     /**
@@ -51,18 +53,17 @@ class Question extends Model
         return $this->hasMany(Transaction::class);
     }
 
+
     /**
-     * @return HasManyThrough
+     * @return BelongsToMany
      */
-    public function topics(): HasManyThrough
+    public function topics(): BelongsToMany
     {
-        return $this->hasManyThrough(
+        return $this->belongsToMany(
             Topic::class,
             QuestionTopic::class,
-            'topic_id',
-            'id',
-            'id',
             'question_id',
+            'topic_id',
         );
     }
 
@@ -78,12 +79,13 @@ class Question extends Model
             'tag_id'
         );
     }
+
     /**
      * @return MorphMany
      */
     public function comments(): MorphMany
     {
-        return $this->morphMany(Comment::class, 'commented');
+        return $this->morphMany(Comment::class, 'commentable');
     }
 
     /**
@@ -92,5 +94,11 @@ class Question extends Model
     public function media(): MorphMany
     {
         return $this->morphMany(Media::class, 'mediable')->orderBy('file_size', 'asc');
+    }
+
+    public function scopeTop($query)
+    {
+        return $query->orderByDesc('gift')->withCount(['voters'])->orderByDesc('voters_count')
+            ->orderByDesc('created_at');
     }
 }

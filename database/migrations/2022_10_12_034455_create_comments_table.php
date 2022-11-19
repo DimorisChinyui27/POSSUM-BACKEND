@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('comments', function (Blueprint $table) {
             $table->increments('id');
             $table->morphs('commentable');
-            $table->morphs('commentated');
+            $table->morphs('commented');
             $table->longText('comment');
             $table->boolean('approved')->default(true);
             $table->timestamps();

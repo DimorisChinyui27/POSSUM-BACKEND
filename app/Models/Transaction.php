@@ -12,6 +12,7 @@ class Transaction extends Model
     protected $table = 'transactions';
 
     /**
+     * get the user
      * @return BelongsTo
      */
     public function user(): BelongsTo
@@ -20,6 +21,7 @@ class Transaction extends Model
     }
 
     /**
+     * answer of the question
      * @return BelongsTo
      */
     public function answer(): BelongsTo
@@ -28,6 +30,7 @@ class Transaction extends Model
     }
 
     /**
+     * question related to the transaction
      * @return BelongsTo
      */
     public function question(): BelongsTo
@@ -35,5 +38,12 @@ class Transaction extends Model
         return $this->belongsTo(Question::class);
     }
 
-
+    /**
+     * get the payment method used for the transaction
+     * @return BelongsTo
+     */
+    public function paymentMethod(): BelongsTo
+    {
+        return $this->belongsTo(PaymentMethod::class);
+    }
 }

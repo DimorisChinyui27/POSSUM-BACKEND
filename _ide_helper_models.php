@@ -64,8 +64,8 @@ namespace App\Models{
  * @property int $id
  * @property string $commentable_type
  * @property int $commentable_id
- * @property string $commentated_type
- * @property int $commentated_id
+ * @property string $commented_type
+ * @property int $commented_id
  * @property string $comment
  * @property int $approved
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -74,6 +74,8 @@ namespace App\Models{
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $commented
  * @property-read \Illuminate\Database\Eloquent\Collection|Comment[] $comments
  * @property-read int|null $comments_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|Comment[] $replies
+ * @property-read int|null $replies_count
  * @method static \Illuminate\Database\Eloquent\Builder|Comment approvedComments()
  * @method static \Illuminate\Database\Eloquent\Builder|Comment newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Comment newQuery()
@@ -82,8 +84,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereComment($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereCommentableId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereCommentableType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereCommentatedId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Comment whereCommentatedType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Comment whereCommentedId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Comment whereCommentedType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereUpdatedAt($value)
@@ -125,6 +127,39 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * App\Models\PaymentMethod
+ *
+ * @property int $id
+ * @property string $code
+ * @property string $name
+ * @property string $description
+ * @property int $status
+ * @property string|null $access_token
+ * @property string|null $expires_at
+ * @property string|null $refresh_token
+ * @property string $token_type
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|PaymentMethod newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PaymentMethod newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PaymentMethod query()
+ * @method static \Illuminate\Database\Eloquent\Builder|PaymentMethod whereAccessToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PaymentMethod whereCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PaymentMethod whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PaymentMethod whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PaymentMethod whereExpiresAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PaymentMethod whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PaymentMethod whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PaymentMethod whereRefreshToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PaymentMethod whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PaymentMethod whereTokenType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PaymentMethod whereUpdatedAt($value)
+ */
+	class PaymentMethod extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
  * App\Models\Permission
  *
  * @property int $id
@@ -157,8 +192,9 @@ namespace App\Models{
  * @property string $body
  * @property string $slug
  * @property int $user_id
- * @property float|null $bounce
+ * @property float $gift
  * @property int $has_correct_answer
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Answer[] $answers
@@ -177,7 +213,7 @@ namespace App\Models{
  * @property-read int|null $transactions_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $upvoters
  * @property-read int|null $upvoters_count
- * @property-read \App\Models\User|null $user
+ * @property-read \App\Models\User $user
  * @property-read \Illuminate\Database\Eloquent\Collection|\LaravelInteraction\Vote\Vote[] $voteableVotes
  * @property-read int|null $voteable_votes_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $voters
@@ -185,11 +221,13 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Question findSimilarSlugs(string $attribute, array $config, string $slug)
  * @method static \Illuminate\Database\Eloquent\Builder|Question newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Question newQuery()
+ * @method static \Illuminate\Database\Query\Builder|Question onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Question query()
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereBody($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Question whereBounce($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Question whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereDownvotedBy(\Illuminate\Database\Eloquent\Model $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|Question whereGift($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereHasCorrectAnswer($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereNotDownvotedBy(\Illuminate\Database\Eloquent\Model $user)
@@ -201,7 +239,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereUpvotedBy(\Illuminate\Database\Eloquent\Model $user)
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereVotedBy(\Illuminate\Database\Eloquent\Model $user)
+ * @method static \Illuminate\Database\Query\Builder|Question withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Question withUniqueSlugConstraints(\Illuminate\Database\Eloquent\Model $model, string $attribute, array $config, string $slug)
+ * @method static \Illuminate\Database\Query\Builder|Question withoutTrashed()
  */
 	class Question extends \Eloquent {}
 }
@@ -292,6 +332,8 @@ namespace App\Models{
  * @property string|null $cover_image
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Question[] $questions
+ * @property-read int|null $questions_count
  * @method static \Illuminate\Database\Eloquent\Builder|Topic findSimilarSlugs(string $attribute, array $config, string $slug)
  * @method static \Illuminate\Database\Eloquent\Builder|Topic newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Topic newQuery()
@@ -315,7 +357,7 @@ namespace App\Models{
  *
  * @property int $id
  * @property string $transaction_id
- * @property string $method
+ * @property string $external_id
  * @property string $type
  * @property float $amount
  * @property float $fee
@@ -323,9 +365,11 @@ namespace App\Models{
  * @property int $user_id
  * @property int|null $question_id
  * @property int|null $answer_id
+ * @property int $payment_method_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Answer|null $answer
+ * @property-read \App\Models\PaymentMethod $paymentMethod
  * @property-read \App\Models\Question|null $question
  * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction newModelQuery()
@@ -334,9 +378,10 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereAnswerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereExternalId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereFee($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereMethod($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Transaction wherePaymentMethodId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereQuestionId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereTransactionId($value)
@@ -357,6 +402,8 @@ namespace App\Models{
  * @property string $username
  * @property string|null $phone
  * @property string|null $dob
+ * @property string|null $about
+ * @property string|null $headline
  * @property string|null $gender
  * @property string|null $address Quarter
  * @property \Illuminate\Support\Carbon|null $email_verified_at
@@ -400,6 +447,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User orWherePermissionIs($permission = '')
  * @method static \Illuminate\Database\Eloquent\Builder|User orWhereRoleIs($role = '', $team = null)
  * @method static \Illuminate\Database\Eloquent\Builder|User query()
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereAbout($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereActivationToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereAddress($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereCityId($value)
@@ -411,6 +459,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereEmailVerifiedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereGender($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereHeadline($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereIsActive($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereName($value)

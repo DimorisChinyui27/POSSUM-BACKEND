@@ -16,14 +16,15 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->string('transaction_id')->unique();
-            $table->string('method');
+            $table->string('external_id')->unique();
             $table->string('type')->default('BOUNCE');
             $table->float('amount');
             $table->float('fee')->default(0.0);
             $table->enum('status', ['cancelled', 'pending', 'failed', 'complete'])->default('pending');
             $table->foreignId('user_id')->constrained()->on('users');
             $table->foreignId('question_id')->nullable()->constrained()->on('questions');
-            $table->foreignId('answer_id')->nullable()->constrained()->on('answers')->nullable();
+            $table->foreignId('answer_id')->nullable()->constrained()->on('answers');
+            $table->foreignId('payment_method_id')->constrained()->on('payment_methods');
             $table->timestamps();
         });
     }

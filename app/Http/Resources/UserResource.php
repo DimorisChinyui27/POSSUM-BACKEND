@@ -7,22 +7,47 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserResource extends JsonResource
 {
+    private int $level;
+
+    public function __construct($resource, $level = 1)
+    {
+        $this->level = $level;
+        parent::__construct($resource);
+    }
+
     /**
      * Transform the resource into an array.
      *
-     * @param  Request  $request
+     * @param Request $request
      * @return array
      */
-    public function toArray($request)
+    public function toArray($request): array
     {
-        return [
+        $array = [
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
-            'dob' => $this->dob,
-            'address' => $this->address,
-            'country' => new CountryResource($this->country),
-            'topics' => TopicResource::collection($this->topics)
+            'headline' => $this->headline,
+            'topics' => TopicResource::collection($this->topics),
+            'img' => $this->img
         ];
+        if ($this->level != 1) {
+            $array = array_merge($array, [
+                'about' => $this->about,
+                'answers_count' => $this->answers_count,
+                'questions_count' => $this->questions_count,
+            ]);
+            if ($this->level == 3) {
+                $array = array_merge($array, [
+                    'dob' => $this->dob,
+                    'bio' => $this->bio,
+                    'address' => $this->address,
+                    'gender' => $this->gender,
+                    'country' => new CountryResource($this->country),
+                    'city' => $this->city
+                ]);
+            }
+        }
+        return $array;
     }
 }

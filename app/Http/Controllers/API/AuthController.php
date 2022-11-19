@@ -6,8 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CompleteRegistrationRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
-use App\Http\Resources\CountryResource;
-use App\Http\Resources\TopicResource;
 use App\Http\Resources\UserResource;
 use App\Models\Topic;
 use App\Models\User;
@@ -23,7 +21,6 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Khsing\World\Models\Country;
 
 class AuthController extends Controller
 {
@@ -32,11 +29,11 @@ class AuthController extends Controller
      * @param LoginRequest $request
      * @return Application|ResponseFactory|JsonResponse|Response
      */
-    public function login(LoginRequest $request)
+    public function login(LoginRequest $request): Response|JsonResponse|Application|ResponseFactory
     {
         $credentials = request(['email', 'password']);
         if (!$token = auth()->attempt($credentials)) {
-            return response(['message' => 'Unauthorized'], 401);
+            return response(['message' => 'Invalid credentials'], 401);
         }
         return response()->json([
             'access_token' => $token,
@@ -48,27 +45,15 @@ class AuthController extends Controller
 
     }
 
-    public function logout()
+    /**
+     * logout the user
+     * @return JsonResponse
+     */
+    public function logout(): JsonResponse
     {
         auth()->logout();
 
         return response()->json(['message' => 'Successfully logged out']);
-    }
-
-    /**
-     * @return Response|Application|ResponseFactory
-     */
-    public function getCountries(): Response|Application|ResponseFactory
-    {
-        return response(CountryResource::collection(Country::all()));
-    }
-
-    /**
-     * @return Response|Application|ResponseFactory
-     */
-    public function getTopics(): Response|Application|ResponseFactory
-    {
-        return response(TopicResource::collection(Topic::all()));
     }
 
     /**
@@ -103,6 +88,7 @@ class AuthController extends Controller
         $user->dob = $request->get('dob');
         $user->country_id = $request->get('country_id');
         $user->address = $request->get('address');
+        $user->headline = $request->get('headline');
         foreach ($request->get('topics') as $topic) {
             if (Topic::whereId((int)$topic)->exists()) {
                 if (!UserTopic::whereUserId($user->id)->where('topic_id', $topic)->exists()) {
@@ -117,6 +103,7 @@ class AuthController extends Controller
         if (!$user->wallet) {
             $wallet = new Wallet();
             $wallet->user()->associate($user);
+            $wallet->balance = 10000;
             $wallet->wallet_id = generateWalletId();
             $wallet->save();
         }

@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Comment extends Model
 {
+    protected $fillable = ['comment', 'commented_id', 'commented_type'];
+
     public function commentable(): MorphTo
     {
         return $this->morphTo();
@@ -29,6 +31,11 @@ class Comment extends Model
     public function comments(): MorphMany
     {
         return $this->morphMany(Comment::class, 'commented');
+    }
+
+    public function replies()
+    {
+        return $this->morphMany(Comment::class, 'commentable')->with(['replies', 'commented']);
     }
 
 

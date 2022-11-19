@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('users_topics', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->on('users');
+            $table->integer('credit_score')->default(24);
             $table->foreignId('topic_id')->constrained()->on('topics');
             $table->timestamps();
         });

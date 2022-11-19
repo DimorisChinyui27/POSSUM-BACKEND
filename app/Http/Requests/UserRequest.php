@@ -4,8 +4,9 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
-class QuestionRequest extends FormRequest
+class UserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,10 +26,14 @@ class QuestionRequest extends FormRequest
     public function rules()
     {
         return [
+            'about' => 'nullable',
+            'headline' => 'nullable',
+            'gender' => [Rule::in(['Male', "Female"])],
             'topics' => 'required|array',
-            'title' => 'required|max:255',
-            'body' => 'required',
-            'files.*' => 'nullable|mimes:png,jpg,jpeg,mp4,3gpp|max:21000',
+            'country_id' => 'required',
+            'city_id' => 'nullable|integer',
+            'dob' => 'date|required',
+            'address' => 'nullable'
         ];
     }
 }

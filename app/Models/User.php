@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -22,9 +21,39 @@ class User extends Authenticatable implements JWTSubject
 {
     use Voter;
     use HasApiTokens, HasFactory, Notifiable, LaratrustUserTrait;
+
     protected $table = 'users';
 
+    protected $appends = ['img'];
+
     // Rest omitted for brevity
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+    ];
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+    ];
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
@@ -45,36 +74,6 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
 
     /**
      * @return HasOne
@@ -112,7 +111,7 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasManyThrough(
             Topic::class,
-                    UserTopic::class,
+            UserTopic::class,
             'user_id',
             'id',
             'id',
@@ -146,5 +145,25 @@ class User extends Authenticatable implements JWTSubject
     public function comments(): MorphMany
     {
         return $this->morphMany(Comment::class, 'commented');
+    }
+
+    public function comment($commentable, string $commentText = ''): Comment
+    {
+        $comment = new Comment();
+        $comment->commentable()->associate($commentable);
+        $comment->commented_id = $this->id;
+        $comment->commented_type = User::class;
+        $comment->comment = $commentText;
+        $comment->save();
+        return $comment;
+    }
+
+    public function getImgAttribute()
+    {
+        if (!empty($this->profile_picture)) {
+            return null;
+        } else {
+            return asset('images/avatar.jpeg');
+        }
     }
 }
