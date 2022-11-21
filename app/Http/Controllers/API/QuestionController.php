@@ -4,9 +4,11 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\QuestionRequest;
+use App\Http\Resources\AnswerResource;
 use App\Http\Resources\CommentResource;
 use App\Http\Resources\QuestionResource;
 use App\Http\Resources\UserResource;
+use App\Models\Answer;
 use App\Models\Comment;
 use App\Models\Media;
 use App\Models\PaymentMethod;
@@ -268,7 +270,7 @@ class QuestionController extends Controller
     }
 
     /**
-     * upvote successfully upvoted
+     * vote
      * @param Request $request
      * @param $id
      * @return Response|Application|ResponseFactory
@@ -355,5 +357,19 @@ class QuestionController extends Controller
                 'message' => 'No such question exists'
             ], 406);
         }
+    }
+
+    /**
+     * get all answers of the question
+     * @param $questionId
+     * @return Response|Application|ResponseFactory
+     */
+    public function getAnswers($questionId): Response|Application|ResponseFactory
+    {
+        $question = Question::whereId($questionId)->firstOrFail();
+        $answers = $question->answers()->top()->paginate()->through(function (Answer $answer) {
+            return (new AnswerResource($answer));
+        });
+        return response($answers->items());
     }
 }

@@ -36,6 +36,7 @@ class UserResource extends JsonResource
                 'about' => $this->about,
                 'answers_count' => $this->answers_count,
                 'questions_count' => $this->questions_count,
+                'voter_votes_count' => $this->voterVotes()->count()
             ]);
             if ($this->level == 3) {
                 $array = array_merge($array, [

@@ -12,6 +12,8 @@ use LaravelInteraction\Vote\Concerns\Voteable;
 
 class Answer extends Model
 {
+    protected $fillable = ['body', 'question_id', 'user_id', 'satisfy'];
+
     use Voteable;
     /**
      * @return BelongsTo
@@ -47,7 +49,13 @@ class Answer extends Model
      */
     public function comments(): MorphMany
     {
-        return $this->morphMany(Comment::class, 'commented');
+        return $this->morphMany(Comment::class, 'commentable');
+    }
+
+    public function scopeTop($query)
+    {
+        return $query->orderByDesc('satisfy')->withCount(['voters'])->orderByDesc('voters_count')
+            ->orderByDesc('created_at');
     }
 
 }

@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserRequest;
+use App\Http\Resources\AnswerResource;
+use App\Http\Resources\QuestionResource;
 use App\Http\Resources\UserResource;
+use App\Models\Answer;
+use App\Models\Question;
 use App\Models\User;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
-use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
@@ -41,7 +44,42 @@ class UserController extends Controller
          }
      }
 
-     public function update()
+    /**
+     * @param UserRequest $request
+     * @return Response|Application|ResponseFactory
+     */
+    public function update(UserRequest $request): Response|Application|ResponseFactory
      {
+        $input = $request->only('dob', 'name', 'about', 'headline', 'address', 'country_id', 'city_id');
+        $user = $request->user()->update($input);
+        return response(new UserResource($user, 3));
+     }
+
+    /**
+     * get user answers
+     * @param $username
+     * @return Response|Application|ResponseFactory
+     */
+    public function getAnswers($username): Response|Application|ResponseFactory
+     {
+         $user = User::whereUsername($username)->firstOrFail();
+         $answers = $user->answers()->paginate()->through(function (Answer $answer) {
+             return new AnswerResource($answer);
+         });
+         return response($answers->items());
+     }
+
+    /**
+     * get questions
+     * @param $username
+     * @return Response|Application|ResponseFactory
+     */
+    public function getQuestions($username): Response|Application|ResponseFactory
+     {
+         $user = User::whereUsername($username)->firstOrFail();
+         $questions = $user->questions()->paginate()->through(function (Question $question){
+             return new QuestionResource($question);
+         });
+         return response($questions->items());
      }
 }

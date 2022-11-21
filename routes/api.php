@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\AnswerController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\QuestionController;
 use App\Http\Controllers\API\ResourceController;
@@ -42,6 +43,14 @@ Route::group([
         Route::group([
             'middleware' => ['complete.registration']
         ], function () {
+            // USERS
+            Route::get('users/edit', [UserController::class, 'edit']);
+            Route::post('users/update', [UserController::class, 'update']);
+            Route::get('users/{username}/answers', [UserController::class, 'getAnswers']);
+            Route::get('users/{username}/questions', [UserController::class, 'getQuestions']);
+            Route::get('users/{username}/show', [UserController::class, 'show']);
+
+            // QUESTIONS
             Route::get('questions', [QuestionController::class, 'index'])->name('qpi=questions-index');
             Route::post('questions', [QuestionController::class, 'store'])
                 ->name('api-questions-create');
@@ -53,16 +62,27 @@ Route::group([
                 ->name('api-questions-destroy');
             Route::post('questions/{question_id}/gift', [QuestionController::class, 'addGift'])
                 ->name('api-questions-gift-add');
+            Route::get('questions/{question_id}/answers', [QuestionController::class, 'getAnswers'])
+                ->name('api-questions-answers');
             Route::post('questions/{question_id}/gift/remove', [QuestionController::class, 'removeGift'])
                 ->name('api-questions-gift-remove');
             Route::post('questions/{question_id}/vote', [QuestionController::class, 'vote'])
                 ->name('api-question-vote');
-//            Route::post('questions/{question_id}/downvote', [QuestionController::class, 'downvote'])
-//                ->name('api-question-downvote');
             Route::get('questions/{question_id}/comments', [QuestionController::class, 'getComments'])
                 ->name('api-questions-comments');
             Route::post('questions/{question_id}/comments/add', [QuestionController::class, 'addComment'])
                 ->name('api-question-add-comment');
+
+            // ANSWER
+            Route::post('answers', [AnswerController::class, 'store'])->name('api.answer.store');
+            Route::get('answers/{id}', [AnswerController::class, 'show'])->name('api.answer.show');
+            Route::post('answers/{id}/update', [AnswerController::class, 'update'])->name('api.answer.update');
+            Route::post('answers/{id}/vote', [AnswerController::class, 'vote']);
+            Route::post('answers/{id}/delete', [AnswerController::class, 'destroy']);
+            Route::post('answers/{id}/add/comment', [AnswerController::class, 'addComment']);
+            Route::get('answers/{id}/comments', [AnswerController::class, 'getComments']);
+            Route::post('answers/{id}/send-gift', [AnswerController::class, 'sendGift'])->name('api.answer.tip');
+
         });
     });
 });
