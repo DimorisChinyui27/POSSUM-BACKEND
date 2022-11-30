@@ -45,7 +45,7 @@ Route::group([
         ], function () {
             // USERS
             Route::get('users/edit', [UserController::class, 'edit']);
-            Route::post('users/topics/remove'. [UserController::class, 'removeTopic']);
+            Route::post('users/topics/remove', [UserController::class, 'removeTopic']);
             Route::post('users/topics/add', [UserController::class, 'addTopic']);
             Route::post('users/update', [UserController::class, 'update']);
             Route::get('users/{username}/answers', [UserController::class, 'getAnswers']);
