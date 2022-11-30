@@ -29,11 +29,12 @@ class UserRequest extends FormRequest
             'about' => 'nullable',
             'headline' => 'nullable',
             'gender' => [Rule::in(['Male', "Female"])],
-            'topics' => 'required|array',
+            'topics' => 'nullable|array',
             'country_id' => 'required',
             'city_id' => 'nullable|integer',
             'dob' => 'date|required',
-            'address' => 'nullable'
+            'address' => 'nullable',
+            'topics.*' => 'nullable|integer'
         ];
     }
 }

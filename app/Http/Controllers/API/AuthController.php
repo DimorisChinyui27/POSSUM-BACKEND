@@ -109,7 +109,6 @@ class AuthController extends Controller
         }
         return response([
             'user' => new UserResource($user),
-            'topics' => $request->get('topics'),
             'message' => 'Registration has been successfully completed'
         ]);
     }
