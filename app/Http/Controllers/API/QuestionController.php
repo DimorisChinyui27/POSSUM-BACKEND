@@ -295,9 +295,9 @@ class QuestionController extends Controller
                 $user->vote($question);
                 $message = 'This question has been voted and will be shown to many people';
             }
-//            $usersTopic = UserTopic::whereTopicId($id)->select([ 'user_id', 'id', 'rating','topic_id', 'confidence_score'])
-//                ->get()->toArray();
-//            updateRanking($usersTopic, $user->id, $win);
+            $usersTopic = UserTopic::whereTopicId($id)->select([ 'user_id', 'id', 'rating','topic_id', 'confidence_score'])
+                ->get()->toArray();
+            updateRanking($usersTopic, $user->id, $win);
             return response([
                 'message' => $message,
                 'question' => new QuestionResource($question)
