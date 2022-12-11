@@ -70,7 +70,7 @@ class AuthController extends Controller
         $user->username = generateUsername($request->get('email'));
         $user->save();
         $user->attachRole('user');
-        $user->notify(new VerifyEmail());
+//        $user->notify(new VerifyEmail());
         return response([
             'message' => 'User created successfully',
             'user' => $user
@@ -86,8 +86,6 @@ class AuthController extends Controller
     {
         $user = Auth::user();
         $user->dob = $request->get('dob');
-        $user->country_id = $request->get('country_id');
-        $user->address = $request->get('address');
         $user->headline = $request->get('headline');
         foreach ($request->get('topics') as $topic) {
             if (Topic::whereId((int)$topic)->exists()) {

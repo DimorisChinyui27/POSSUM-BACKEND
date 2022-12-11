@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->date('dob')->nullable();
             $table->text('about')->nullable();
             $table->string('headline')->nullable();
+            $table->string('language')->default('en');
             $table->enum('gender', ['Male', 'Female'])->nullable();
             $table->string('address')->nullable()->comment('Quarter');
             $table->timestamp('email_verified_at')->nullable();

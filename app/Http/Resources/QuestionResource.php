@@ -21,6 +21,7 @@ class QuestionResource extends JsonResource
             'title' => $this->title,
             'body' => $this->body,
             'slug' => $this->slug,
+            'has_correct_answer' => $this->has_correct_answer?:false,
             'user' => [
                 'name' => $this->user->name,
                 'username' => $this->user->username,

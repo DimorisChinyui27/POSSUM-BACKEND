@@ -25,9 +25,9 @@ class CompleteRegistrationRequest extends FormRequest
     {
         return [
             'topics' => 'required|array',
-            'country_id' => 'required',
             'dob' => 'date|required',
-            'address' => 'nullable'
+            'language' => 'required',
+            'headline' => 'required'
         ];
     }
 }

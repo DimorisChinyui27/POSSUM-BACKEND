@@ -14,6 +14,7 @@ use App\Models\Media;
 use App\Models\PaymentMethod;
 use App\Models\Question;
 use App\Models\Transaction;
+use App\Models\UserTopic;
 use App\Services\FileService;
 use App\Traits\FileUploadTrait;
 use Illuminate\Contracts\Foundation\Application;
@@ -180,6 +181,7 @@ class QuestionController extends Controller
                 $transaction->payment_method_id = PaymentMethod::whereCode($request->get('payment_method'))->first()->id;
                 $transaction->save();
             }
+            $question->has_correct_answer = false;
             $question->gift = $question->gift + $amount;
             $question->save();
 
@@ -278,14 +280,24 @@ class QuestionController extends Controller
     public function vote(Request $request, $id): Response|Application|ResponseFactory
     {
         if ($question = Question::whereId($id)->first()) {
+            if ($question->answers()->where('user_id', $request->user()->id)->exists()) {
+                return response([
+                    'message' => 'You have already voted for another answer'
+                ], 406);
+            }
             $user = $request->user();
+            $win = true;
             if ($user->hasVoted($question)) {
                 $user->cancelVote($question);
+                $win = false;
                 $message = 'Vote remove';
             } else {
                 $user->vote($question);
                 $message = 'This question has been voted and will be shown to many people';
             }
+//            $usersTopic = UserTopic::whereTopicId($id)->select([ 'user_id', 'id', 'rating','topic_id', 'confidence_score'])
+//                ->get()->toArray();
+//            updateRanking($usersTopic, $user->id, $win);
             return response([
                 'message' => $message,
                 'question' => new QuestionResource($question)
