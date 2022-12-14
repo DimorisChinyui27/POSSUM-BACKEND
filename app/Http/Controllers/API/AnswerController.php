@@ -6,12 +6,15 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\AnswerRequest;
 use App\Http\Resources\AnswerResource;
 use App\Http\Resources\CommentResource;
+use App\Http\Resources\QuestionResource;
 use App\Http\Resources\UserResource;
 use App\Models\Answer;
 use App\Models\Comment;
 use App\Models\PaymentMethod;
 use App\Models\Question;
 use App\Models\Transaction;
+use App\Models\UserTopic;
+use App\Services\FileService;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
@@ -19,6 +22,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use LaravelInteraction\Vote\Vote;
 
 class AnswerController extends Controller
 {
@@ -40,11 +44,15 @@ class AnswerController extends Controller
      */
     public function store(AnswerRequest $request): Response|Application|ResponseFactory
     {
-        if (Question::whereId($request->get('question_id'))->exists()) {
+        if ($question = Question::whereId($request->get('question_id'))->first()) {
             $input = $request->only('body', 'question_id');
             $input['user_id'] = $request->user()->id;
             $input['satisfy'] = false;
             $answer = Answer::create($input);
+            $request->user()->topics()->sync($question->topics->pluck('id'));
+            if ($request->file('files')) {
+                (new FileService('answers'))->storeFiles($request->file('files'), $answer);
+            }
             return response(new AnswerResource($answer));
         } else {
             return  response([
@@ -68,6 +76,44 @@ class AnswerController extends Controller
     }
 
 
+    /**
+     * satisfy for an answer
+     * @param Request $request
+     * @param $answerId
+     * @return Response|Application|ResponseFactory
+     */
+    public function satisfy(Request $request, $answerId): Response|Application|ResponseFactory
+    {
+        if ($answer = Answer::whereId($answerId)->first()) {
+            $user = $request->user();
+            $transaction = $user->transactions()->where('question_id', $answer->question_id)->where('type', 'GIFT_QUESTION')
+                ->where('status', 'pending')->first();
+            if ($transaction) {
+                $amount = $transaction->amount - ($transaction->amount * getSettingsOf('admin_percentage'));
+
+                $answerWallet = $answer->user->wallet;
+                $answerWallet->balance = $answerWallet->balance + $amount;
+                $answerWallet->save();
+
+                $transaction->answer_id = $answerId;
+                $transaction->status = 'complete';
+                $transaction->save();
+
+                $question = $answer->question;
+                $question->gift = $question->gift - $transaction->amount;
+                $question->save();
+                return response([
+                    'message' => 'Gift has been send to the user',
+                    'answer' => new AnswerResource($answer),
+                    'question' => new QuestionResource($question)
+                ]);
+            } else {
+                return response(['message' => 'No such gift transaction '], 406);
+            }
+        } else {
+            return response (['message' => 'No such answer'], 406);
+        }
+    }
 
     /**
      * @param Request $request
@@ -76,8 +122,8 @@ class AnswerController extends Controller
      */
     public function sendGift(Request $request, $id): Response|Application|ResponseFactory
     {
-        $min_tip = getSettingsOf('min_tip');
-        $max_tip = getSettingsOf('max_tip');
+        $min_tip = (int)getSettingsOf('min_tip');
+        $max_tip = (int)getSettingsOf('max_tip');
         $validation = Validator::make($request->all(), [
             'payment_method' => ['required', Rule::in(PaymentMethod::whereStatus(true)->pluck('code'))],
             'amount' => "required|numeric|min:$min_tip|max:$max_tip",
@@ -141,12 +187,30 @@ class AnswerController extends Controller
     {
         if ($answer = Answer::whereId($id)->first()) {
             $user = $request->user();
+            $win = true;
+            $question = $answer->question;
             if ($user->hasVoted($answer)) {
                 $user->cancelVote($answer);
                 $message = 'Vote remove';
+                $win = false;
             } else {
+                if ($question->answers()->where('user_id', $request->user()->id)->exists()) {
+                    return response([
+                        'message' => 'You have already voted for another answer'
+                    ], 406);
+                }
                 $user->vote($answer);
                 $message = 'This answer has been voted and will be shown to many people';
+            }
+            $usersTopic = UserTopic::whereIn('topic_id', $answer->question->topics->pluck('id'))
+                ->select([ 'user_id', 'id', 'rating','topic_id', 'confidence_score'])->get()->toArray();
+            updateRanking($usersTopic, $answer->user_id, $win);
+            if ($question->gift == 0.0) {
+                $totalAnswerVote = Vote::whereMorphedTo('voteable', $answer)->count();
+                if (sqrt($question->answers->count()) >= ($totalAnswerVote * 0.5)) {
+                    $question->has_correct_answer = true;
+                    $question->save();
+                }
             }
             return response([
                 'message' => $message,

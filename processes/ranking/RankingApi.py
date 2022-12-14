@@ -11,24 +11,14 @@ def Create_Rating(Nmu=25.0,Nsigma=8.333333333333334):
 
 #Changes user ranking once that user gets a crown or losses a crown
 def UpdateUserRating():
-    print(sys.argv[1])
-    print(sys.argv[2])
-    print(sys.argv[3])
-    Player_id = 1
-    win_status = True
-    All_Users_Ratings_Data =  [
-        {
-        'user_id': 1,
-        'rating': 25.0,
-        'confidence_score': 8.333333333333334
-        },
-    ]
+    All_Users_Ratings_Data = json.loads(sys.argv[1])
+    Player_id = int(sys.argv[2])
+    win_status = bool(sys.argv[3])
     Player_rating_obj=None
     Player_rating_replacement_obj=None
     Competitors_list=[]
     New_Ratings_Data=[]
     for statdict in All_Users_Ratings_Data:
-        print(statdict)
         if Player_id==statdict['user_id']:
             #Creates rating objects for the user who got crown from that user ratings data in database
             Player_rating_obj=Create_Rating(Nmu=float(statdict['rating']),Nsigma=float(statdict['confidence_score']))
@@ -58,7 +48,7 @@ def UpdateUserRating():
             New_Ratings_Data.append({"user_id":key,"rating":Competitors_list[i][key].mu,"confidence_score":Competitors_list[i][key].sigma})
 
     New_Ratings_Data.append({"user_id":Player_id,"rating":Player_rating_obj.mu,"confidence_score":Player_rating_obj.sigma})
-    return New_Ratings_Data
+    print(json.dumps(New_Ratings_Data))
 
 
 def Get_Experts_in_Topic(userTopics):

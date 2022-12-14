@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use ProtoneMedia\LaravelCrossEloquentSearch\Search;
 
 class UserController extends Controller
 {
@@ -56,7 +57,7 @@ class UserController extends Controller
         $input = $request->only('dob', 'name', 'about', 'headline', 'address', 'country_id', 'city_id');
         $user = $request->user()->update($input);
         if ($request->get('topics')) {
-            $user->topics()->sync($request->get('topics'));
+            $user->topics()->syncWithoutDetaching($request->get('topics'));
         }
         return response(new UserResource($user, 3));
     }
@@ -113,10 +114,33 @@ class UserController extends Controller
             ], 400);
         }
         $topicName = $request->get('topic_name');
-        $topic = new Topic();
-        $topic->name = ['en' => $topicName, 'fr' => $topicName];
-        $topic->save();
-        $request->user()->topics()->sync([$topic->id]);
+        $topic = Search::add(Topic::class, ['name', 'slug'])->search($topicName)->first();
+        if (!$topic) {
+            $topic = new Topic();
+            $topic->name = ['en' => $topicName, 'fr' => $topicName];
+            $topic->save();
+        }
+        $request->user()->topics()->syncWithoutDetaching([$topic->id]);
         return response(new UserResource($request->user(), 3));
+    }
+
+    /**
+     * @param Request $request
+     * @return Response|Application|ResponseFactory
+     */
+    public function searchUser(Request $request): Response|Application|ResponseFactory
+    {
+        $query = $request->get('query');
+        $users = Search::add(User::class, ['name', 'phone', 'email', 'username'])
+            ->paginate()
+            ->search($query)->transform(function (User $user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'username' => $user->username,
+                    'email' =>  $user->email
+                ];
+            });
+        return response($users);
     }
 }

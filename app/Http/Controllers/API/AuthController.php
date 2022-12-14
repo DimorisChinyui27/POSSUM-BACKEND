@@ -89,6 +89,8 @@ class AuthController extends Controller
         $user = Auth::user();
         $user->dob = $request->get('dob');
         $user->headline = $request->get('headline');
+        $user->country_id = $request->get('country_id');
+        $user->address = $request->get('address');
         foreach ($request->get('topics') as $topic) {
             if (Topic::whereId((int)$topic)->exists()) {
                 if (!UserTopic::whereUserId($user->id)->where('topic_id', $topic)->exists()) {

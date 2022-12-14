@@ -44,6 +44,7 @@ Route::group([
             'middleware' => ['complete.registration']
         ], function () {
             // USERS
+            Route::get('users/search', [UserController::class, 'searchUser']);
             Route::get('users/edit', [UserController::class, 'edit']);
             Route::post('users/topics/remove', [UserController::class, 'removeTopic']);
             Route::post('users/topics/add', [UserController::class, 'addTopic']);
@@ -81,6 +82,7 @@ Route::group([
             Route::post('answers/{id}/update', [AnswerController::class, 'update'])->name('api.answer.update');
             Route::post('answers/{id}/vote', [AnswerController::class, 'vote']);
             Route::post('answers/{id}/delete', [AnswerController::class, 'destroy']);
+            Route::post('answers/{id}/satisfy', [AnswerController::class, 'satisfy']);
             Route::post('answers/{id}/add/comment', [AnswerController::class, 'addComment']);
             Route::get('answers/{id}/comments', [AnswerController::class, 'getComments']);
             Route::post('answers/{id}/send-gift', [AnswerController::class, 'sendGift'])->name('api.answer.tip');

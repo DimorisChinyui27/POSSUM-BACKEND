@@ -27,6 +27,7 @@ class UserResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
+            'username' => $this->username,
             'headline' => $this->headline,
             'topics' => TopicResource::collection($this->topics),
             'img' => $this->img

@@ -113,15 +113,15 @@ if (!function_exists('updateRanking')) {
     function updateRanking($usersTopic, $playerId, $success)
     {
         $process = new LaravelPython();
-        $usersRanking = $process->run(base_path() . '/processes/ranking/runRanking.py', array(
+        $usersRanking =  $process->run(base_path() . '/processes/ranking/runRanking.py', array(
             json_encode($usersTopic),
-            $playerId,
+            (string)$playerId,
             $success ? 1:0
         ));
-        Log::error($usersRanking);
-        foreach (collect($usersRanking)->toArray() as $userRanking) {
+        $usersRanking = json_decode($usersRanking, true);
+        foreach ($usersRanking as $userRanking) {
             UserTopic::whereTopicId($usersTopic[0]['topic_id'])
-                ->where('user_id', $usersTopic['user_id'])
+                ->where('user_id', $userRanking['user_id'])
                 ->update($userRanking);
         }
     }

@@ -27,12 +27,15 @@ class QuestionResource extends JsonResource
                 'username' => $this->user->username,
                 'img' => asset('images/avatar.jpeg'),
             ],
+            'has_contribute' => $request->user() ? $this->transactions()->where('user_id', $request->user()->id)
+                ->where('type', 'GIFT_QUESTION')
+                ->where('status', 'pending')->exists() : false,
             'gift' => $this->gift?:0.0,
             'has_voted' => $request->user() ? $this->isVotedBy($request->user()) : false,
             'total_voters' => $this->votersCount()?:0,
             'comments_count' => $this->comments()->count()?: 0,
             'answers_count' => $this->answers_count?:0,
-            'answers' => [],
+            'answers' => AnswerResource::collection($this->answers()->top()->limit(15)->get()),
             'topics'=> TopicResource::collection($this->topics),
             'media' => $this->media->transform(function (Media $media) {
                 return [
