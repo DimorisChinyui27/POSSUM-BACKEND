@@ -4,10 +4,14 @@ use App\Models\Question;
 use App\Models\Topic;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Models\UserTopic;
 use App\Models\Wallet;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use robertogallea\LaravelPython\Services\LaravelPython;
 use Spatie\Valuestore\Valuestore;
+use Symfony\Component\Process\Process;
 
 /**
  * get value from the json file
@@ -101,6 +105,24 @@ if (!function_exists('getQuestions')) {
                 ->orderByRaw("questions_topics.id = ? desc", $topics)->top();
         } else {
             return Question::orderByDesc('created_at');
+        }
+    }
+}
+
+if (!function_exists('updateRanking')) {
+    function updateRanking($usersTopic, $playerId, $success)
+    {
+        $process = new LaravelPython();
+        $usersRanking =  $process->run(base_path() . '/processes/ranking/runRanking.py', array(
+            json_encode($usersTopic),
+            (string)$playerId,
+            $success ? 1:0
+        ));
+        $usersRanking = json_decode($usersRanking, true);
+        foreach ($usersRanking as $userRanking) {
+            UserTopic::whereTopicId($usersTopic[0]['topic_id'])
+                ->where('user_id', $userRanking['user_id'])
+                ->update($userRanking);
         }
     }
 }

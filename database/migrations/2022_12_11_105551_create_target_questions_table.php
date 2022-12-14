@@ -13,16 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('questions', function (Blueprint $table) {
+        Schema::create('target_questions', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->longText('body');
-            $table->string('slug')->unique();
             $table->foreignId('user_id')->constrained()->on('users');
-            $table->float('gift')->default(0.0);
-            $table->boolean('has_correct_answer')->default(false);
-            $table->enum('target', ['experts', 'nearby', 'user']);
-            $table->softDeletes();
+            $table->foreignId('question_id')->constrained()->on('questions');
             $table->timestamps();
         });
     }
@@ -34,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('questions');
+        Schema::dropIfExists('target_questions');
     }
 };

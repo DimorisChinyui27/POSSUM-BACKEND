@@ -1,7 +1,7 @@
 {
     "min_tip": 3,
     "max_tip": 500,
-    "admin_percentage": 0.02,
-    "questioner_percentage": 0.02,
-    "answerer_percentage": 0.06
+    "admin_percentage": 0.2,
+    "questioner_percentage": 0.2,
+    "answerer_percentage": 0.6
 }

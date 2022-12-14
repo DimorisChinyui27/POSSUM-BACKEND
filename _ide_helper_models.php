@@ -40,6 +40,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Answer newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Answer newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Answer query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Answer top()
  * @method static \Illuminate\Database\Eloquent\Builder|Answer whereBody($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Answer whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Answer whereDownvotedBy(\Illuminate\Database\Eloquent\Model $user)
@@ -194,6 +195,7 @@ namespace App\Models{
  * @property int $user_id
  * @property float $gift
  * @property int $has_correct_answer
+ * @property string $target
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -223,6 +225,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Question newQuery()
  * @method static \Illuminate\Database\Query\Builder|Question onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Question query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Question top()
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereBody($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereDeletedAt($value)
@@ -234,6 +237,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereNotUpvotedBy(\Illuminate\Database\Eloquent\Model $user)
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereNotVotedBy(\Illuminate\Database\Eloquent\Model $user)
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Question whereTarget($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereUpvotedBy(\Illuminate\Database\Eloquent\Model $user)
@@ -322,6 +326,27 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * App\Models\TargetQuestion
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property int $question_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|TargetQuestion newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|TargetQuestion newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|TargetQuestion query()
+ * @method static \Illuminate\Database\Eloquent\Builder|TargetQuestion whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TargetQuestion whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TargetQuestion whereQuestionId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TargetQuestion whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|TargetQuestion whereUserId($value)
+ */
+	class TargetQuestion extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
  * App\Models\Topic
  *
  * @property int $id
@@ -404,6 +429,7 @@ namespace App\Models{
  * @property string|null $dob
  * @property string|null $about
  * @property string|null $headline
+ * @property string $language
  * @property string|null $gender
  * @property string|null $address Quarter
  * @property \Illuminate\Support\Carbon|null $email_verified_at
@@ -424,6 +450,7 @@ namespace App\Models{
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Comment[] $comments
  * @property-read int|null $comments_count
  * @property-read \Khsing\World\Models\Country|null $country
+ * @property-read mixed $img
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read int|null $notifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Permission[] $permissions
@@ -462,6 +489,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User whereHeadline($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereIsActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereLanguage($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereOs($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User wherePassword($value)
@@ -483,14 +511,18 @@ namespace App\Models{
  *
  * @property int $id
  * @property int $user_id
+ * @property float $rating
+ * @property float $confidence_score
  * @property int $topic_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|UserTopic newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserTopic newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserTopic query()
+ * @method static \Illuminate\Database\Eloquent\Builder|UserTopic whereConfidenceScore($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserTopic whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserTopic whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserTopic whereRating($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserTopic whereTopicId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserTopic whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserTopic whereUserId($value)

@@ -13,7 +13,10 @@ use App\Models\Comment;
 use App\Models\Media;
 use App\Models\PaymentMethod;
 use App\Models\Question;
+use App\Models\TargetQuestion;
 use App\Models\Transaction;
+use App\Models\UserTopic;
+use App\Notifications\GeneralNotification;
 use App\Services\FileService;
 use App\Traits\FileUploadTrait;
 use Illuminate\Contracts\Foundation\Application;
@@ -77,10 +80,23 @@ class QuestionController extends Controller
         $input = $request->only('title', 'body');
         $input['user_id'] = auth()->id();
         $question = Question::create($input);
+        if ($request->get('target') == 'user') {
+            try {
+                foreach ($request->get('targets') as $target) {
+                    $targetQuestion = new TargetQuestion();
+                    $targetQuestion->question_id = $question->id;
+                    $targetQuestion->user_id = $target;
+                    $targetQuestion->save();
+                }
+            } catch (\Exception $exception){};
+
+        }
         if ($request->file('files')) {
             (new FileService())->storeFiles($request->file('files'), $question);
         }
-        $question->topics()->attach($request->get('topics'));
+
+        $question->topics()->syncWithoutDetaching($request->get('topics'));
+        $request->user()->topics()->syncWithoutDetaching($question->topics->pluck('id'));
         return response(new QuestionResource($question));
     }
 
@@ -140,11 +156,11 @@ class QuestionController extends Controller
      */
     public function addGift(Request $request, $question_id): Response|Application|ResponseFactory
     {
-        $min_tip = getSettingsOf('min_tip');
-        $max_tip = getSettingsOf('max_tip');
+        $min_tip = (int)getSettingsOf('min_tip');
+        $max_tip = (int)getSettingsOf('max_tip');
         $validation = Validator::make($request->all(), [
             'payment_method' => ['required', Rule::in(PaymentMethod::whereStatus(true)->pluck('code'))],
-            'amount' => "required|min:$min_tip|max:$max_tip"
+            'amount' => "required|integer|min:$min_tip|max:$max_tip"
         ]);
         if ($validation->fails()) {
             return response([
@@ -158,6 +174,8 @@ class QuestionController extends Controller
                     'message' => 'No such question exists'
                 ], 406);
             }
+            $question->has_correct_answer = false;
+            $question->save();
             $amount = $request->get('amount');
             $user = $request->user();
             $wallet = $user->wallet;
@@ -180,6 +198,7 @@ class QuestionController extends Controller
                 $transaction->payment_method_id = PaymentMethod::whereCode($request->get('payment_method'))->first()->id;
                 $transaction->save();
             }
+            $question->has_correct_answer = false;
             $question->gift = $question->gift + $amount;
             $question->save();
 
@@ -278,6 +297,7 @@ class QuestionController extends Controller
     public function vote(Request $request, $id): Response|Application|ResponseFactory
     {
         if ($question = Question::whereId($id)->first()) {
+
             $user = $request->user();
             if ($user->hasVoted($question)) {
                 $user->cancelVote($question);
@@ -285,6 +305,11 @@ class QuestionController extends Controller
             } else {
                 $user->vote($question);
                 $message = 'This question has been voted and will be shown to many people';
+//                $question->user->notify(new GeneralNotification(
+//                    'You have received a new vote on your question title: '.$question->title,
+//                    'New Question Vote',
+//                    ['type' => 'NEW_QUESTION_VOTE', 'question' => new QuestionResource($question)]
+//                ));
             }
             return response([
                 'message' => $message,

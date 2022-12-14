@@ -26,6 +26,7 @@ class AnswerRequest extends FormRequest
     {
         return [
             'body' => 'required|max:255',
+            'files.*' => 'nullable|mimes:png,jpg,jpeg,mp4,3gpp|max:21000',
         ];
     }
 }
