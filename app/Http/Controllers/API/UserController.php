@@ -22,6 +22,8 @@ use ProtoneMedia\LaravelCrossEloquentSearch\Search;
 class UserController extends Controller
 {
 
+
+
     /**
      * get all authenticated user info
      * @return Response|Application|ResponseFactory

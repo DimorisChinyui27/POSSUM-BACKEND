@@ -16,6 +16,7 @@ class AnswerResource extends JsonResource
     public function toArray($request)
     {
         return [
+            'id' => $this->id,
             'body' => $this->body,
             'has_voted' => $request->user() ? $this->isVotedBy($request->user()) : false,
             'total_voters' => $this->votersCount()?:0,
