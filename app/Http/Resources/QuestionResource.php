@@ -25,6 +25,7 @@ class QuestionResource extends JsonResource
             'user' => [
                 'name' => $this->user->name,
                 'username' => $this->user->username,
+                'headline' => $this->headline,
                 'img' => asset('images/avatar.jpeg'),
             ],
             'has_contribute' => $request->user() ? $this->transactions()->where('user_id', $request->user()->id)

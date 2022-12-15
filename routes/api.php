@@ -54,6 +54,7 @@ Route::group([
             Route::get('users/{username}/show', [UserController::class, 'show']);
 
             // QUESTIONS
+            Route::get('questions/search', [QuestionController::class, 'searchQuestion']);
             Route::get('questions', [QuestionController::class, 'index'])->name('qpi=questions-index');
             Route::post('questions', [QuestionController::class, 'store'])
                 ->name('api-questions-create');

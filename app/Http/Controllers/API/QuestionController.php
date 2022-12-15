@@ -23,12 +23,38 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
 class QuestionController extends Controller
 {
     use FileUploadTrait;
+
+    /**
+     * @param Request $request
+     * @return Application|ResponseFactory|Response
+     */
+    public function searchQuestion(Request $request)
+    {
+        $result = Http::post(config('app.semantic_search_url'), [
+            'userquestion' => $request->get('query'),
+            'language' => $request->user()->language,
+            'allquestionsinDB' => Question::all()->transform(function (Question $question) {
+              return $question->title;
+            })
+        ]);
+        $questions = Question::top();
+        $result = $result->json();
+        foreach ($result["similarquestions"] as $sentence) {
+
+            $questions = $questions->orWhere('title', 'like', '%'.$sentence.'%');
+        }
+        $questions = $questions->paginate(25)->through(function (Question $question) {
+            return new QuestionResource($question);
+        });
+        return response($questions);
+    }
 
     /**
      * get all user questions
