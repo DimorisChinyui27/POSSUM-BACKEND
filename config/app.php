@@ -57,7 +57,7 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
-    'semantic_search_url' => env('SEMANTIC_SEARCH_URL', 'http://54.89.255.5/findsimilarquestions'),
+    'semantic_search_url' => env('SEMANTIC_SEARCH_URL', 'http://ec2-3-82-160-116.compute-1.amazonaws.com/findsimilarquestions'),
 
 'asset_url' => env('ASSET_URL'),
 
