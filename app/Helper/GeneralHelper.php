@@ -101,8 +101,9 @@ if (!function_exists('getQuestions')) {
                 $topics = Topic::withCount('questions')->orderBy('questions_count', 'desc')
                     ->limit(1)->get()->pluck('id');
             }
-            return Question::join('questions_topics', 'questions_topics.question_id', '=', 'questions.id')
-                ->orderByRaw("questions_topics.id = ? desc", $topics)->top();
+           return Question::whereHas('topics', function ($q) use ($topics) {
+                $q->orderByRaw("questions_topics.topic_id = ? desc", $topics);
+            })->top();
         } else {
             return Question::orderByDesc('created_at');
         }

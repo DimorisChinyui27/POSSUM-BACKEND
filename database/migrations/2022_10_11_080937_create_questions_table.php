@@ -22,6 +22,7 @@ return new class extends Migration
             $table->float('gift')->default(0.0);
             $table->boolean('has_correct_answer')->default(false);
             $table->enum('target', ['experts', 'nearby', 'user']);
+            $table->boolean('is_anonymous')->default(false);
             $table->softDeletes();
             $table->timestamps();
         });

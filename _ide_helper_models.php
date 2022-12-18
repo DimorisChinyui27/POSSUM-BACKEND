@@ -196,6 +196,7 @@ namespace App\Models{
  * @property float $gift
  * @property int $has_correct_answer
  * @property string $target
+ * @property int $is_anonymous
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -209,6 +210,8 @@ namespace App\Models{
  * @property-read int|null $media_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Tag[] $tags
  * @property-read int|null $tags_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $targets
+ * @property-read int|null $targets_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Topic[] $topics
  * @property-read int|null $topics_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Transaction[] $transactions
@@ -233,6 +236,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereGift($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereHasCorrectAnswer($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Question whereIsAnonymous($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereNotDownvotedBy(\Illuminate\Database\Eloquent\Model $user)
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereNotUpvotedBy(\Illuminate\Database\Eloquent\Model $user)
  * @method static \Illuminate\Database\Eloquent\Builder|Question whereNotVotedBy(\Illuminate\Database\Eloquent\Model $user)
@@ -433,6 +437,7 @@ namespace App\Models{
  * @property string|null $gender
  * @property string|null $address Quarter
  * @property \Illuminate\Support\Carbon|null $email_verified_at
+ * @property int $enable_email_notification
  * @property int $is_active Account is active
  * @property string|null $profile_picture Profile picture
  * @property string $password
@@ -474,6 +479,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User orWherePermissionIs($permission = '')
  * @method static \Illuminate\Database\Eloquent\Builder|User orWhereRoleIs($role = '', $team = null)
  * @method static \Illuminate\Database\Eloquent\Builder|User query()
+ * @method static \Illuminate\Database\Eloquent\Builder|User top()
  * @method static \Illuminate\Database\Eloquent\Builder|User whereAbout($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereActivationToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereAddress($value)
@@ -485,6 +491,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User whereDoesntHaveRole()
  * @method static \Illuminate\Database\Eloquent\Builder|User whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereEmailVerifiedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereEnableEmailNotification($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereGender($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereHeadline($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereId($value)

@@ -9,7 +9,7 @@
         "barryvdh/laravel-ide-helper": "^2.12",
         "cviebrock/eloquent-sluggable": "^9.0",
         "elasticsearch/elasticsearch": "^8.5",
-        "fruitcake/laravel-cors": "^2.0",
+        "fruitcake/laravel-cors": "^3.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "intervention/image": "^2.7",
         "intervention/imagecache": "^2.5",

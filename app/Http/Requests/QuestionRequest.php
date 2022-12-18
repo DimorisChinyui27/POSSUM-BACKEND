@@ -28,7 +28,9 @@ class QuestionRequest extends FormRequest
             'topics' => 'required|array',
             'title' => 'required|max:255',
             'body' => 'required',
+            'topics.*' => 'integer',
             'files.*' => 'nullable|mimes:png,jpg,jpeg,mp4,3gpp|max:21000',
+            'users.*' => 'nullable|integer'
         ];
     }
 }
