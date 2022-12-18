@@ -70,6 +70,19 @@ class Question extends Model
     /**
      * @return BelongsToMany
      */
+    public function targets(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            User::class,
+            TargetQuestion::class,
+            'question_id',
+            'user_id',
+        );
+    }
+
+    /**
+     * @return BelongsToMany
+     */
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(

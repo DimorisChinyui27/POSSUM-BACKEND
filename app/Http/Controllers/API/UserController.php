@@ -22,8 +22,19 @@ use ProtoneMedia\LaravelCrossEloquentSearch\Search;
 class UserController extends Controller
 {
 
-
-
+    public function index()
+    {
+        $users = User::top()->limit(10)->get()->transform(function (User $user){
+            return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'username' => $user->username,
+                'headline' => $user->headline,
+                'img' => $user->img
+            ];
+        });
+        return response($users);
+    }
     /**
      * get all authenticated user info
      * @return Response|Application|ResponseFactory
@@ -57,11 +68,11 @@ class UserController extends Controller
     public function update(UserRequest $request): Response|Application|ResponseFactory
     {
         $input = $request->only('dob', 'name', 'about', 'headline', 'address', 'country_id', 'city_id');
-        $user = $request->user()->update($input);
+        $request->user()->update($input);
         if ($request->get('topics')) {
-            $user->topics()->syncWithoutDetaching($request->get('topics'));
+            $request->user()->topics()->syncWithoutDetaching($request->get('topics'));
         }
-        return response(new UserResource($user, 3));
+        return response(new UserResource($request->user(), 3));
     }
 
     /**

@@ -26,6 +26,7 @@ class CreateUsersTable extends Migration
             $table->enum('gender', ['Male', 'Female'])->nullable();
             $table->string('address')->nullable()->comment('Quarter');
             $table->timestamp('email_verified_at')->nullable();
+            $table->boolean('enable_email_notification')->default(true);
             $table->boolean('is_active')->default(true)->comment('Account is active');
             $table->string('profile_picture')->nullable()->comment('Profile picture');
             $table->string('password');

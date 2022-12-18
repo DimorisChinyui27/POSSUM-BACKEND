@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\Media;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -21,8 +22,11 @@ class QuestionResource extends JsonResource
             'title' => $this->title,
             'body' => $this->body,
             'slug' => $this->slug,
+            'is_anonymous' => (boolean)$this->is_anonymous,
+            'target_type' => $this->target,
             'has_correct_answer' => $this->has_correct_answer?:false,
             'user' => [
+                'id' => $this->id,
                 'name' => $this->user->name,
                 'username' => $this->user->username,
                 'headline' => $this->headline,
@@ -38,6 +42,15 @@ class QuestionResource extends JsonResource
             'answers_count' => $this->answers_count?:0,
             'answers' => AnswerResource::collection($this->answers()->top()->limit(15)->get()),
             'topics'=> TopicResource::collection($this->topics),
+            'target_users' => $this->target == 'user' ? $this->targets->transform(function (User $user) {
+               return [
+                   'id' => $user->id,
+                   'username' => $user->username,
+                   'name' => $user->name,
+                   'headline' => $this->headline,
+                   'img' => asset('images/avatar.jpeg'),
+               ] ;
+            }) : null,
             'media' => $this->media->transform(function (Media $media) {
                 return [
                     'id' => $media->id,

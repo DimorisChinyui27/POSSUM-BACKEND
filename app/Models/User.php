@@ -164,4 +164,11 @@ class User extends Authenticatable implements JWTSubject
             return asset('images/avatar.jpeg');
         }
     }
+
+    public function scopeTop($query)
+    {
+        return $query->withCount(['answers', 'questions'])->orderByDesc('answers_count')
+            ->orderByDesc('questions_count')
+            ->orderByDesc('created_at');
+    }
 }

@@ -45,6 +45,7 @@ Route::group([
         ], function () {
             // USERS
             Route::get('users/search', [UserController::class, 'searchUser']);
+            Route::get('users/ranking', [UserController::class, 'index']);
             Route::get('users/edit', [UserController::class, 'edit']);
             Route::post('users/topics/remove', [UserController::class, 'removeTopic']);
             Route::post('users/topics/add', [UserController::class, 'addTopic']);
@@ -55,6 +56,7 @@ Route::group([
 
             // QUESTIONS
             Route::get('questions/search', [QuestionController::class, 'searchQuestion']);
+            Route::get('questions/recent', [QuestionController::class, 'recentQuestion']);
             Route::get('questions', [QuestionController::class, 'index'])->name('qpi=questions-index');
             Route::post('questions', [QuestionController::class, 'store'])
                 ->name('api-questions-create');

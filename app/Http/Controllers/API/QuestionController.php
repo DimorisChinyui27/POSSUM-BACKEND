@@ -13,10 +13,7 @@ use App\Models\Comment;
 use App\Models\Media;
 use App\Models\PaymentMethod;
 use App\Models\Question;
-use App\Models\TargetQuestion;
 use App\Models\Transaction;
-use App\Models\UserTopic;
-use App\Notifications\GeneralNotification;
 use App\Services\FileService;
 use App\Traits\FileUploadTrait;
 use Illuminate\Contracts\Foundation\Application;
@@ -41,17 +38,28 @@ class QuestionController extends Controller
             'userquestion' => $request->get('query'),
             'language' => $request->user()->language,
             'allquestionsinDB' => Question::all()->transform(function (Question $question) {
-              return $question->title;
+                return $question->title;
             })
         ]);
         $questions = Question::top();
         $result = $result->json();
-        foreach ($result["similarquestions"] as $sentence) {
+        foreach ($result["similarquestions"][0] as $sentence) {
 
-            $questions = $questions->orWhere('title', 'like', '%'.$sentence.'%');
+            $questions = $questions->orWhere('title', 'like', '%' . $sentence . '%');
         }
         $questions = $questions->paginate(25)->through(function (Question $question) {
             return new QuestionResource($question);
+        });
+        return response($questions);
+    }
+
+    /**
+     * @return Response|Application|ResponseFactory
+     */
+    public function recentQuestion(): Response|Application|ResponseFactory
+    {
+        $questions = Question::orderByDesc('created_at')->paginate()->transform(function (Question $question) {
+           return new QuestionResource($question);
         });
         return response($questions);
     }
@@ -103,24 +111,19 @@ class QuestionController extends Controller
      */
     public function store(QuestionRequest $request): Response|Application|ResponseFactory
     {
-        $input = $request->only('title', 'body');
+        $input = $request->only('title', 'body', 'target', 'is_anonymous');
         $input['user_id'] = auth()->id();
         $question = Question::create($input);
         if ($request->get('target') == 'user') {
             try {
-                foreach ($request->get('targets') as $target) {
-                    $targetQuestion = new TargetQuestion();
-                    $targetQuestion->question_id = $question->id;
-                    $targetQuestion->user_id = $target;
-                    $targetQuestion->save();
-                }
-            } catch (\Exception $exception){};
+                $question->targets()->syncWithoutDetaching($request->get('users'));
+            } catch (\Exception $exception) {
+            };
 
         }
         if ($request->file('files')) {
             (new FileService())->storeFiles($request->file('files'), $question);
         }
-
         $question->topics()->syncWithoutDetaching($request->get('topics'));
         $request->user()->topics()->syncWithoutDetaching($question->topics->pluck('id'));
         return response(new QuestionResource($question));
@@ -136,9 +139,16 @@ class QuestionController extends Controller
     {
         $user = $request->user();
         if ($question = $user->questions()->whereId($question_id)->first()) {
-            $input = $request->only('title', 'body');
+            $input = $request->only('title', 'body', 'target', 'is_anonymous');
             $question->update($input);
-            $question->topics()->sync($request->get('topics'));
+            if ($request->get('target') != 'user') {
+                try {
+                    $question->targets()->detach($request->get('users'));
+                } catch (\Exception $exception) {
+                };
+
+            }
+            $question->topics()->syncWithoutDetaching($request->get('topics'));
             if ($request->file('files')) {
                 (new FileService())->storeFiles($request->file('files'), $question);
             }
@@ -248,7 +258,7 @@ class QuestionController extends Controller
     {
         if ($question = Question::whereId($questionId)->first()) {
             $comments = $question->comments()->paginate()->through(function (Comment $comment) {
-               return new CommentResource($comment);
+                return new CommentResource($comment);
             });
             return response($comments->items());
         } else {
@@ -399,7 +409,7 @@ class QuestionController extends Controller
         if ($question) {
             $comment = $user->comment($question, $request->get('comment'));
             return response([
-               'message' => 'Your comment has been successfully added',
+                'message' => 'Your comment has been successfully added',
                 'comment' => new CommentResource($comment),
                 'question' => new QuestionResource($question),
             ]);

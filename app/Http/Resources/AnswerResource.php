@@ -20,13 +20,17 @@ class AnswerResource extends JsonResource
             'body' => $this->body,
             'has_voted' => $request->user() ? $this->isVotedBy($request->user()) : false,
             'total_voters' => $this->votersCount()?:0,
-            'comments_count' => $this->comments()->count()?: 0,
-            'answers_count' => $this->answers_count?:0,
             'user' => [
                 'username' => $this->user->username,
                 'name' => $this->user->name,
                 'img' => $this->user->img
             ],
+            'question' => [
+                'id' => $this->question->id,
+                'title' => $this->question->title,
+                'body' => $this->question->body
+            ],
+            'satisfy' =>(boolean)$this->satisfy
         ];
     }
 }
