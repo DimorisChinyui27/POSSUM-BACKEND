@@ -456,6 +456,7 @@ namespace App\Models{
  * @property-read int|null $comments_count
  * @property-read \Khsing\World\Models\Country|null $country
  * @property-read mixed $img
+ * @property-read \App\Models\Media|null $media
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read int|null $notifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Permission[] $permissions

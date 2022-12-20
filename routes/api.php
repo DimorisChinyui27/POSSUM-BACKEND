@@ -37,6 +37,8 @@ Route::group([
     Route::group([
         'middleware' => ['auth:api']
     ], function () {
+        Route::post('summarize', [ResourceController::class, 'summarize']);
+        Route::post('translatetext', [ResourceController::class, 'translate']);
         Route::post('logout', [AuthController::class, 'logout'])->name('api-logout');
         Route::get('users/profile', [UserController::class, 'userProfile'])->name('api-user-profile');
 
@@ -50,6 +52,7 @@ Route::group([
             Route::post('users/topics/remove', [UserController::class, 'removeTopic']);
             Route::post('users/topics/add', [UserController::class, 'addTopic']);
             Route::post('users/update', [UserController::class, 'update']);
+            Route::post('users/update/avatar', [UserController::class, 'updateAvatar']);
             Route::get('users/{username}/answers', [UserController::class, 'getAnswers']);
             Route::get('users/{username}/questions', [UserController::class, 'getQuestions']);
             Route::get('users/{username}/show', [UserController::class, 'show']);

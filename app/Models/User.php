@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Khsing\World\Models\City;
@@ -158,8 +159,8 @@ class User extends Authenticatable implements JWTSubject
 
     public function getImgAttribute()
     {
-        if (!empty($this->profile_picture)) {
-            return null;
+        if (!empty($this->media)) {
+            return asset('storage/files/users/' . $this->media->file_name);
         } else {
             return asset('images/avatar.jpeg');
         }
@@ -170,5 +171,14 @@ class User extends Authenticatable implements JWTSubject
         return $query->withCount(['answers', 'questions'])->orderByDesc('answers_count')
             ->orderByDesc('questions_count')
             ->orderByDesc('created_at');
+    }
+
+
+    /**
+     * @return MorphOne
+     */
+    public function media(): morphOne
+    {
+        return $this->morphOne(Media::class, 'mediable')->orderBy('file_size', 'asc');
     }
 }

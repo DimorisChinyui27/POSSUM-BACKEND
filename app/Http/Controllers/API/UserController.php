@@ -11,6 +11,7 @@ use App\Models\Answer;
 use App\Models\Question;
 use App\Models\Topic;
 use App\Models\User;
+use App\Services\FileService;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\Request;
@@ -72,6 +73,33 @@ class UserController extends Controller
         if ($request->get('topics')) {
             $request->user()->topics()->syncWithoutDetaching($request->get('topics'));
         }
+        if ($request->file('avatar')) {
+            $media = $request->user()->media;
+            if ($media) {
+                (new FileService())->unlinkFile($media->file_name);
+                $media->delete();
+            }
+            (new FileService('users'))->storeFiles([$request->file('avatar')], $request->user());
+        }
+        $request->user()->refresh();
+        return response(new UserResource($request->user(), 3));
+    }
+
+    /**
+     * @param Request $request
+     * @return Response|Application|ResponseFactory
+     */
+    public function updateAvatar(Request $request): Response|Application|ResponseFactory
+    {
+        if ($request->file('avatar')) {
+            $media = $request->user()->media;
+            if ($media) {
+                (new FileService())->unlinkFile($media->file_name);
+                $media->delete();
+            }
+            (new FileService('users'))->storeFiles([$request->file('avatar')], $request->user());
+        }
+        $request->user()->refresh();
         return response(new UserResource($request->user(), 3));
     }
 

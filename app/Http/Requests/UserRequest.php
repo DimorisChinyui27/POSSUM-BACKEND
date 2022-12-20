@@ -34,7 +34,8 @@ class UserRequest extends FormRequest
             'city_id' => 'nullable|integer',
             'dob' => 'date|required',
             'address' => 'nullable',
-            'topics.*' => 'nullable|integer'
+            'topics.*' => 'nullable|integer',
+            'avatar' => 'nullable|mimes:png,jpg,jpeg'
         ];
     }
 }
