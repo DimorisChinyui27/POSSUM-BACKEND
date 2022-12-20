@@ -58,6 +58,8 @@ return [
     'url' => env('APP_URL', 'http://localhost'),
 
     'semantic_search_url' => env('SEMANTIC_SEARCH_URL', 'http://ec2-3-82-160-116.compute-1.amazonaws.com/findsimilarquestions'),
+    'summarize_url' => env('SUMMARIZE_URL', 'http://ec2-100-26-170-51.compute-1.amazonaws.com/summarize'),
+    'translator_url' => env('TRANSLATOR_URL', 'ec2-54-205-108-58.compute-1.amazonaws.com/translatetext'),
 
 'asset_url' => env('ASSET_URL'),
 
